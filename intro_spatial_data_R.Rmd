@@ -131,9 +131,7 @@ My first step in a spatial analysis is prepping the data, which includes the fol
 - Pre-process the data is it "plays nicely", 
 - Visualize the data
 
-
 ##Shapefiles
-
 
 ### Load a Shapefile  
 
@@ -143,7 +141,7 @@ Read in a shapefile of the US West Coast and northern Baja peninsula by using `r
 # dsn is the path name & layer is the name of the file. NOTE: you do not need to add an extension to the layer name
 
 #named cc for california current
-cc = readOGR(dsn='data',layer='ca_current')
+cc = readOGR(dsn='data',layer='ca_current') 
 ```
 
 ### Plot a Shapefile  
@@ -164,9 +162,7 @@ map('world',fill=T,add=T,col='gray')
 The information in the summary of the shapefile is important if you need to understand what `projection` your **SpatialPolygonsDataFrame** is in, along with the `extent` and number of features. In this case there are just two features, the EEZs of the US West Coast and northern Baja Mexico. You can get this information by just typing in the name 'cc'
 
 ```{r shapefile summary}
-
 cc
-
 ```
 
 ### Attribute Tables    
@@ -174,7 +170,6 @@ cc
 You can look at the data held within a shapefile by calling `cc@data`. The dataframe associated with the shapefile can be treated just as any other dataframe. Columns can be added, names can be changed, tables can be joined. 
 
 ```{r attribute table}
-
 cc@data
 
 #Add another column:
@@ -254,14 +249,14 @@ sstStack = stack(sst_files)
 plot(sstStack,col=cols)
 ```
 
-### Raster Calcuations
+### Raster Calculations
 
 You can perform operations on a RasterStack by using the `calc()` function from the `raster` package. `calc()` lets you define a function to apply across all layers in the stack.
 
 Calculate the mean value per cell and then convert to Celsius by subtracting 273.15.
 ```{r calc sst}
 # By adding 'filename=' R will directly save the raster into the defined file rather than memory
-sstAvg = calc(sstStack,fun=function(x){mean(x,na.rm=T)-273.15})#,filename='data/sstAvg.tif', overwrite=T) 
+sstAvg = calc(sstStack,fun=function(x){mean(x,na.rm=T)-273.15},filename='data/sstAvg.tif', overwrite=T) 
 
 plot(sstAvg,col=cols, main = 'Mean Sea Surface Temperature (Celsius)');plot(cc,add=T)
 ```
@@ -379,7 +374,6 @@ Check to see that we can use the SST and NPP data together now
 ```{r stack data}
 stack(npp,sstAvg) #No error and the stack has two layers so it looks good!
 ```
-
 ***
 
 # Analysis   
@@ -467,8 +461,7 @@ avg = mean(sstAvg,npp);plot(avg,col=cols)
 #Additional Functions  
 
 This could be all you need - but I want to show some additional steps to highlight more functionality in R.  
-  
-  
+
 ### Mask  
 
 You can remove cells outside of your region by using the `mask()` function. Here, you only want to keep cells that are within the Mexican or US EEZs.
@@ -483,7 +476,6 @@ plot(cellsEEZ,col='lightblue', main = 'Suitable Aquaculture Areas');plot(cc,add=
 
 You can then crop your raster to a smaller extent
 ```{r}
-
 cellsCrop = crop(cellsEEZ,extent(-125,-110,25,35)) #setting extent by eyeing it
 plot(cellsCrop,col='lightblue',main = 'Suitable Aquaculture Areas');plot(cc,add=T)
 ```
